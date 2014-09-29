@@ -49,6 +49,7 @@ Plugin 'tpope/vim-repeat'
 Plugin 'endel/vim-github-colorscheme'
 Plugin 'vim-indent-object'
 Plugin 'Valloric/YouCompleteMe'
+Plugin 'cmake'
 
 call vundle#end()
 

@@ -31,8 +31,8 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 Plugin 'mru.vim'
-Plugin 'crucerucalin/peaksea.vim'
-Plugin 'crucerucalin/qml.vim'
+Plugin 'calincru/peaksea.vim'
+Plugin 'calincru/qml.vim'
 Plugin 'ack.vim'
 Plugin 'YankRing.vim'
 Plugin 'jlanzarotta/bufexplorer'
@@ -81,6 +81,18 @@ nmap <leader>s :%s/\s\+$//g<cr>
 " :W sudo saves the file
 " (useful for handling the permission-denied error)
 command W w !sudo tee % > /dev/null
+
+" Word wrap to 80 characters markdown files and activate spelling checking.
+autocmd BufRead,BufNewFile *.md set filetype=markdown
+autocmd BufRead,BufNewFile *.md setlocal textwidth=80
+autocmd FileType markdown setlocal spell
+
+" Word wrap to 72 characters in git commit messages and spell check.
+autocmd FileType gitcommit setlocal textwidth=72
+autocmd FileType gitcommit setlocal spell
+
+" Adds a red line on the 81st column
+set colorcolumn=81
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -268,7 +280,7 @@ endtry
 
 " Return to last edit position when opening files (You want this!)
 autocmd BufReadPost *
-     \ if line("'\"") > 0 && line("'\"") <= line("$") |
+     \ if &ft != 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") |
      \   exe "normal! g`\"" |
      \ endif
 " Remember info about open buffers on close
@@ -635,6 +647,7 @@ let g:ycm_complete_in_strings = 0
 let g:ycm_global_ycm_extra_conf = '/home/calin/dev/.ycm_extra_conf.py'
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_extra_conf_globlist = ['~/dev/*','!~/*']
+let g:ycm_autoclose_preview_window_after_insertion = 1
 
 
 " The trailing semicolon enables Vim to recurse all of the subdirectories

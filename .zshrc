@@ -21,6 +21,7 @@ alias grep='grep --color=auto'
 alias reload="source ~/.zshrc"
 alias netest="ping 8.8.8.8"
 alias qtcreator="nohup qtcreator &>/dev/null &"
+alias eclipse="nohup /home/calin/Workplace/eclipse/eclipse &>/dev/null &"
 
 alias sysupdate="sudo $SCRIPTS_DIR/system-update.sh"
 alias clearwsp="$SCRIPTS_DIR/clear_whitespaces.sh"

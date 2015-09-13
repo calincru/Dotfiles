@@ -2,14 +2,11 @@
 SCRIPTS_DIR="/home/calin/dev/scripts"
 
 # PATH addings
-# export PATH="/home/calin/qt5/qtbase/bin:$PATH" # qt5 x86_64 binaries
-export PATH="/home/calin/qt5-android-release/qtbase/bin:$PATH" # qt5 arm
-export PATH="/home/calin/qt-creator/build/bin:$PATH" # qt-creator binary
-
+export PATH="/home/calin/qt5/qtbase/bin:$PATH" # qt5 x86_64 binaries
 export PATH="/home/calin/android/jdk1.7.0_67/bin:$PATH" # JKD
-export PATH="/home/calin/android/apache-ant-1.9.4/bin:$PATH" # ANT
-export PATH="/home/calin/android/android-sdk/platform-tools:$PATH" # SDK
-export PATH="/home/calin/android/android-sdk/tools:$PATH" # SDK tools
+
+export PATH="/home/calin/.cabal/bin:$PATH"
+export PATH="/home/calin/Workplace/fpinscala/sbt/bin:$PATH"
 
 # Prompt
 ZSH_THEME="clean"
@@ -26,6 +23,7 @@ alias eclipse="nohup /home/calin/Workplace/eclipse/eclipse &>/dev/null &"
 alias sysupdate="sudo $SCRIPTS_DIR/system-update.sh"
 alias clearwsp="$SCRIPTS_DIR/clear_whitespaces.sh"
 alias setLDLP="source $SCRIPTS_DIR/set_LDLP.sh"
+alias checkcs="$SCRIPTS_DIR/checkpatch.pl"
 
 # Important files
 alias zshrc="vim ~/.zshrc"
@@ -64,11 +62,20 @@ unsetopt correctall
 # FASD for faster switching between directories
 eval "$(fasd --init auto)"
 
+
 # LLVM exports
-export LLVM_BUILD_DIR=/home/calin/Workplace/llvm_workshop/llvm-build
-export LLVM_SOURCE_DIR=/home/calin/Workplace/llvm_workshop/llvm
+export LLVM_BUILD_DIR=/home/calin/Workplace/llvm-build
+export LLVM_SOURCE_DIR=/home/calin/Workplace/llvm
+
 export LLVM_CFLAGS="$(llvm-config --cxxflags) -fno-rtti"
 export LLVM_LDFLAGS="$(llvm-config --ldflags)"
+
+# Boost
+export BOOST_ROOT=/home/calin/Workplace/modular-boost/
+
+# CMake
+export PATH="/home/calin/Workplace/cmake-3.1.3-install/bin:$PATH"
+
 
 # alt-left and alt-right for switching words in terminal
 bindkey -e
@@ -81,3 +88,6 @@ CASE_SENSITIVE="true"
 ZSH=$HOME/.oh-my-zsh
 plugins=(git common-aliases debian mercurial fasd zsh-syntax-highlighting)
 source $ZSH/oh-my-zsh.sh
+
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+[[ -s ~/.rvm/scripts/rvm ]] && . ~/.rvm/scripts/rvm

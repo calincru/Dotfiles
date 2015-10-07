@@ -50,6 +50,8 @@ Plugin 'endel/vim-github-colorscheme'
 Plugin 'vim-indent-object'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'cmake'
+Plugin 'raichoo/haskell-vim'
+Plugin 'derekwyatt/vim-scala'
 
 call vundle#end()
 
@@ -82,18 +84,12 @@ nmap <leader>s :%s/\s\+$//g<cr>
 " (useful for handling the permission-denied error)
 command W w !sudo tee % > /dev/null
 
-" Word wrap to 80 characters markdown files and activate spelling checking.
-autocmd BufRead,BufNewFile *.md set filetype=markdown
-autocmd BufRead,BufNewFile *.md setlocal textwidth=80
-autocmd FileType markdown setlocal spell
-
-" Word wrap to 72 characters in git commit messages and spell check.
-autocmd FileType gitcommit setlocal textwidth=72
-autocmd FileType gitcommit setlocal spell
 
 " Adds a red line on the 81st column
 set colorcolumn=81
 
+" Mouse settings
+set mouse=a
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
@@ -170,6 +166,7 @@ set list listchars=tab:»\ ,trail:·,extends:»,precedes:«
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Enable syntax highlighting
 syntax enable
+syntax on
 
 " Set extra options when running in GUI mode
 if has("gui_running")
@@ -390,9 +387,10 @@ map <leader>pp :setlocal paste!<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Filetypes settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+filetype on
 
 """"""""""""""""""""""""""""""
-" => Python section
+" => Python
 """"""""""""""""""""""""""""""
 let python_highlight_all = 1
 au FileType python syn keyword pythonDecorator True None False self
@@ -411,6 +409,34 @@ au FileType python map <buffer> <leader>2 /def
 au FileType python map <buffer> <leader>C ?class
 au FileType python map <buffer> <leader>D ?def
 
+
+""""""""""""""""""""""""""""""
+" => Markdown
+""""""""""""""""""""""""""""""
+" Word wrap to 80 characters markdown files and activate.
+au BufRead,BufNewFile *.md set filetype=markdown
+au FileType markdown setlocal textwidth=80 colorcolumn=81
+
+
+""""""""""""""""""""""""""""""
+" => Git Commit
+""""""""""""""""""""""""""""""
+" Word wrap to 72 characters in git commit messages.
+au FileType gitcommit setlocal textwidth=72 colorcolumn=73
+
+
+""""""""""""""""""""""""""""""
+" => C
+""""""""""""""""""""""""""""""
+au BufRead,BufNewFile *.h set filetype=c
+au FileType c setlocal tw=80 ts=8 sw=8 cindent noexpandtab
+
+
+""""""""""""""""""""""""""""""
+" => Haskell
+""""""""""""""""""""""""""""""
+au BufRead,BufNewFile *.hs set filetype=haskell
+au FileType haskell setlocal textwidth=79 tabstop=4 shiftwidth=4 colorcolumn=80
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -648,6 +674,23 @@ let g:ycm_global_ycm_extra_conf = '/home/calin/dev/.ycm_extra_conf.py'
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_extra_conf_globlist = ['~/dev/*','!~/*']
 let g:ycm_autoclose_preview_window_after_insertion = 1
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Haskell vim
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:haskell_enable_quantification = 1
+let g:haskell_enable_recursivedo = 1
+let g:haskell_enable_arrowsyntax = 1
+let g:haskell_enable_pattern_synonyms = 1
+let g:haskell_enable_typeroles = 1
+let g:haskell_enable_static_pointers = 1
+
+let g:haskell_indent_if = 3
+let g:haskell_indent_case = 2
+let g:haskell_indent_let = 4
+let g:haskell_indent_where = 6
+let g:haskell_indent_do = 3
+let g:haskell_indent_in = 1
 
 
 " The trailing semicolon enables Vim to recurse all of the subdirectories

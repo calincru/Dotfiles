@@ -30,28 +30,25 @@ filetype off
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
-Plugin 'mru.vim'
 Plugin 'calincru/peaksea.vim'
+Plugin 'altercation/vim-colors-solarized'
 Plugin 'calincru/qml.vim'
 Plugin 'ack.vim'
 Plugin 'YankRing.vim'
-Plugin 'jlanzarotta/bufexplorer'
 Plugin 'octol/vim-cpp-enhanced-highlight'
-Plugin 'ctrlp.vim'
-Plugin 'scrooloose/nerdtree'
 Plugin 'amix/open_file_under_cursor.vim'
 Plugin 'majutsushi/tagbar'
-Plugin 'bling/vim-airline'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 Plugin 'tpope/vim-commentary'
-Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-markdown'
 Plugin 'tpope/vim-repeat'
 Plugin 'endel/vim-github-colorscheme'
 Plugin 'vim-indent-object'
-Plugin 'Valloric/YouCompleteMe'
 Plugin 'cmake'
-Plugin 'raichoo/haskell-vim'
+Plugin 'neovimhaskell/haskell-vim'
 Plugin 'derekwyatt/vim-scala'
+Plugin 'Valloric/YouCompleteMe'
 
 call vundle#end()
 
@@ -84,12 +81,12 @@ nmap <leader>s :%s/\s\+$//g<cr>
 " (useful for handling the permission-denied error)
 command W w !sudo tee % > /dev/null
 
-
-" Adds a red line on the 81st column
-set colorcolumn=81
+" Adds a red line on the 80th column
+set colorcolumn=80
 
 " Mouse settings
 set mouse=a
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
@@ -108,7 +105,7 @@ else
     set wildignore+=.git\*,.hg\*,.svn\*
 endif
 
-"Always show current position
+" Always show current position
 set ruler
 
 " Height of the command bar
@@ -166,7 +163,6 @@ set list listchars=tab:»\ ,trail:·,extends:»,precedes:«
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Enable syntax highlighting
 syntax enable
-syntax on
 
 " Set extra options when running in GUI mode
 if has("gui_running")
@@ -227,6 +223,8 @@ set wrap "Wrap lines
 vnoremap <silent> * :call VisualSelection('f', '')<CR>
 vnoremap <silent> # :call VisualSelection('b', '')<CR>
 
+" Clang format
+map <C-I> :pyf /home/calin/scripts/clang-format.py<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Moving around, tabs, windows and buffers
@@ -334,7 +332,7 @@ vnoremap <silent> gv :call VisualSelection('gv', '')<CR>
 " Open Ack and put the cursor in the right position
 map <leader>g :Ack
 
-" When you press <leader>r you can search and replace the selected text
+" When you press <leader>r you can saarch and replace the selected text
 vnoremap <silent> <leader>r :call VisualSelection('replace', '')<CR>
 
 " Do :help cope if you are unsure what cope is. It's super useful!
@@ -373,6 +371,9 @@ map <leader>s? z=
 " Remove the Windows ^M - when the encodings gets messed up
 noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
+" Go to definition
+nnoremap <leader>pg :YcmCompleter GoTo<CR>
+
 " Quickly open a buffer for scribble
 map <leader>q :e ~/buffer<cr>
 
@@ -387,7 +388,6 @@ map <leader>pp :setlocal paste!<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Filetypes settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-filetype on
 
 """"""""""""""""""""""""""""""
 " => Python
@@ -422,7 +422,7 @@ au FileType markdown setlocal textwidth=80 colorcolumn=81
 " => Git Commit
 """"""""""""""""""""""""""""""
 " Word wrap to 72 characters in git commit messages.
-au FileType gitcommit setlocal textwidth=72 colorcolumn=73
+au FileType gitcommit setlocal textwidth=72 colorcolumn=73 spell
 
 
 """"""""""""""""""""""""""""""
@@ -436,7 +436,13 @@ au FileType c setlocal tw=80 ts=8 sw=8 cindent noexpandtab
 " => Haskell
 """"""""""""""""""""""""""""""
 au BufRead,BufNewFile *.hs set filetype=haskell
-au FileType haskell setlocal textwidth=79 tabstop=4 shiftwidth=4 colorcolumn=80
+au FileType haskell setlocal textwidth=79 tabstop=2 shiftwidth=2 colorcolumn=80
+
+""""""""""""""""""""""""""""""
+" => LaTeX
+""""""""""""""""""""""""""""""
+au BufRead,BufNewFile *.tex set filetype=tex
+au FileType tex setlocal textwidth=79 tabstop=2 shiftwidth=2 colorcolumn=80 spell expandtab
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -607,13 +613,6 @@ map <leader>o :BufExplorer<cr>
 
 
 """"""""""""""""""""""""""""""
-" => MRU plugin
-""""""""""""""""""""""""""""""
-let MRU_Max_Entries = 400
-map <leader>f :MRU<CR>
-
-
-""""""""""""""""""""""""""""""
 " => YankRing
 """"""""""""""""""""""""""""""
 if has("win16") || has("win32")
@@ -661,7 +660,7 @@ map <leader>nf :NERDTreeFind<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => vim-airline config (force color)
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:airline_theme="luna"
+let g:airline_theme="bubblegum"
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -670,10 +669,11 @@ let g:airline_theme="luna"
 let g:ycm_error_symbol = '>>'
 let g:ycm_warning_symbol = '>'
 let g:ycm_complete_in_strings = 0
-let g:ycm_global_ycm_extra_conf = '/home/calin/dev/.ycm_extra_conf.py'
+let g:ycm_global_ycm_extra_conf = '/home/calin/scripts/.ycm_extra_conf.py'
 let g:ycm_confirm_extra_conf = 0
-let g:ycm_extra_conf_globlist = ['~/dev/*','!~/*']
+let g:ycm_extra_conf_globlist = ['~/scripts/*','!~/*']
 let g:ycm_autoclose_preview_window_after_insertion = 1
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Haskell vim
@@ -691,13 +691,3 @@ let g:haskell_indent_let = 4
 let g:haskell_indent_where = 6
 let g:haskell_indent_do = 3
 let g:haskell_indent_in = 1
-
-
-" The trailing semicolon enables Vim to recurse all of the subdirectories
-" of its current directory looking for tag files.
-" So make sure that you set vim's current directory to working project's
-" root.
-set tags=./tags,tags;
-
-" Qt library
-set tags+=~/ctags/qt/tags

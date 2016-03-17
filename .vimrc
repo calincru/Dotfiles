@@ -214,6 +214,9 @@ set ai "Auto indent
 set si "Smart indent
 set wrap "Wrap lines
 
+set fdm=syntax
+set foldlevelstart=100
+
 
 """"""""""""""""""""""""""""""
 " => Visual mode related
@@ -296,7 +299,7 @@ set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ 
 " => Editing mappings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Remap VIM 0 to first non-blank character
-map 0 ^
+" map 0 ^
 
 " Move a line of text using ALT+[jk] or Comamnd+[jk] on mac
 nmap <M-j> mz:m+<cr>`z
@@ -350,6 +353,9 @@ map <leader>cc :botright cope<cr>
 map <leader>co ggVGy:tabnew<cr>:set syntax=qf<cr>pgg
 map <leader>n :cn<cr>
 map <leader>p :cp<cr>
+
+imap jk <Esc>
+imap kj <Esc>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -415,7 +421,7 @@ au FileType python map <buffer> <leader>D ?def
 """"""""""""""""""""""""""""""
 " Word wrap to 80 characters markdown files and activate.
 au BufRead,BufNewFile *.md set filetype=markdown
-au FileType markdown setlocal textwidth=80 colorcolumn=81
+au FileType markdown setlocal textwidth=79 colorcolumn=81
 
 
 """"""""""""""""""""""""""""""
@@ -429,7 +435,7 @@ au FileType gitcommit setlocal textwidth=72 colorcolumn=73 spell
 " => C
 """"""""""""""""""""""""""""""
 au BufRead,BufNewFile *.h set filetype=c
-au FileType c setlocal tw=80 ts=8 sw=8 cindent noexpandtab
+au FileType c setlocal tw=79 ts=8 sw=8 cindent noexpandtab
 
 
 """"""""""""""""""""""""""""""

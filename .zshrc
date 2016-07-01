@@ -1,93 +1,143 @@
-# Local Variables
-SCRIPTS_DIR="/home/calin/dev/scripts"
+# Path to your oh-my-zsh installation.
+export ZSH=/home/calin/.oh-my-zsh
 
-# PATH addings
-export PATH="/home/calin/qt5/qtbase/bin:$PATH" # qt5 x86_64 binaries
-export PATH="/home/calin/android/jdk1.7.0_67/bin:$PATH" # JKD
-
-export PATH="/home/calin/.cabal/bin:$PATH"
-export PATH="/home/calin/Workplace/fpinscala/sbt/bin:$PATH"
-
-# Prompt
+# Set name of the theme to load.
+# Look in ~/.oh-my-zsh/themes/
+# Optionally, if you set this to "random", it'll load a random theme each
+# time that oh-my-zsh is loaded.
 ZSH_THEME="clean"
 
-# Aliases
-alias l="ls -F"
-alias ll="ls -AGlFt"
-alias grep='grep --color=auto'
-alias reload="source ~/.zshrc"
-alias netest="ping 8.8.8.8"
-alias qtcreator="nohup qtcreator &>/dev/null &"
-alias eclipse="nohup /home/calin/Workplace/eclipse/eclipse &>/dev/null &"
+# Uncomment the following line to use case-sensitive completion.
+CASE_SENSITIVE="true"
 
-alias sysupdate="sudo $SCRIPTS_DIR/system-update.sh"
-alias clearwsp="$SCRIPTS_DIR/clear_whitespaces.sh"
-alias setLDLP="source $SCRIPTS_DIR/set_LDLP.sh"
-alias checkcs="$SCRIPTS_DIR/checkpatch.pl"
+# Uncomment the following line to use hyphen-insensitive completion. Case
+# sensitive completion must be off. _ and - will be interchangeable.
+# HYPHEN_INSENSITIVE="true"
 
-# Important files
-alias zshrc="vim ~/.zshrc"
-alias vimrc="vim ~/.vimrc"
-alias vimlast="vim -c \"normal '0\""
-alias syslog="vim /var/log/syslog"
+# Uncomment the following line to disable bi-weekly auto-update checks.
+# DISABLE_AUTO_UPDATE="true"
 
-# Shorthands
-alias e="exit"
-alias py="python"
-alias h='history'
+# Uncomment the following line to change how often to auto-update (in days).
+# export UPDATE_ZSH_DAYS=13
 
-# Exports
-export JAVA_HOME=/home/calin/android/jdk1.7.0_67
-export ANDROID_HOME=/home/calin/android/android-sdk
-export ANDROID_SDK=/home/calin/android/android-sdk
-export ANDROID_SDK_ROOT=/home/calin/android/android-sdk
-export ANDROID_NDK=/home/calin/android/android-ndk
-export ANDROID_NDK_TOOLCHAIN_ROOT=/home/calin/android/android-ndk/toolchains
-export ANDROID_NDK_ROOT=/home/calin/android/android-ndk
-export ANDROID_NDK_HOST=linux-x86_64
-export ANDROID_NDK_PLATFORM=android-9
-export ANDROID_NDK_TOOLCHAIN_VERSION=4.8
-export ANDRIOD_BUILD_TOOLS_REVISION=20.0.0
+# Uncomment the following line to disable colors in ls.
+# DISABLE_LS_COLORS="true"
 
-export Qt5_host=/home/calin/qt5/qtbase
-export Qt5_android=/home/calin/qt5-android-release/qtbase
+# Uncomment the following line to disable auto-setting terminal title.
+DISABLE_AUTO_TITLE="true"
 
-export EDITOR="vim"
-export LC_ALL="en_US.UTF-8"
-export LANG="en_US"
+# Uncomment the following line to enable command auto-correction.
+# ENABLE_CORRECTION="true"
 
-# Remove annoying messages
-unsetopt correctall
+# Uncomment the following line to display red dots whilst waiting for completion.
+# COMPLETION_WAITING_DOTS="true"
+
+# Uncomment the following line if you want to disable marking untracked files
+# under VCS as dirty. This makes repository status check for large repositories
+# much, much faster.
+# DISABLE_UNTRACKED_FILES_DIRTY="true"
+
+# Uncomment the following line if you want to change the command execution time
+# stamp shown in the history command output.
+# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+# HIST_STAMPS="mm/dd/yyyy"
+
+# Would you like to use another custom folder than $ZSH/custom?
+# ZSH_CUSTOM=/path/to/new-custom-folder
+
+# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
+# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+plugins=(git zsh-syntax-highlighting fasd archlinux cabal gitfast
+         common-aliases
+        )
+
+# User configuration
+
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl"
+export PATH="/home/calin/scripts:$PATH" # Add scripts dir to path
+# export MANPATH="/usr/local/man:$MANPATH"
+
+source $ZSH/oh-my-zsh.sh
+
+# You may need to manually set your language environment
+# export LANG=en_US.UTF-8
+
+# Preferred editor for local and remote sessions
+EDITOR=vim
+
+# Preferred browser
+BROWSER=firefox
+
+# Compilation flags
+# export ARCHFLAGS="-arch x86_64"
+
+# ssh
+# export SSH_KEY_PATH="~/.ssh/dsa_id"
+
+# Set personal aliases, overriding those provided by oh-my-zsh libs,
+# plugins, and themes. Aliases can be placed here, though oh-my-zsh
+# users are encouraged to define aliases within the ZSH_CUSTOM folder.
+# For a full list of active aliases, run `alias`.
+#
+# Example aliases
+# alias zshconfig="mate ~/.zshrc"
+# alias ohmyzsh="mate ~/.oh-my-zsh"
+
+# Tmux
+ZSH_TMUX_AUTOSTART=true
+ZSH_TMUX_AUTOQUIT=true
+alias tmux='tmux -2'
 
 # FASD for faster switching between directories
 eval "$(fasd --init auto)"
 
+# Local Variables
+SCRIPTS_DIR="/home/calin/scripts"
 
-# LLVM exports
-export LLVM_BUILD_DIR=/home/calin/Workplace/llvm-build
-export LLVM_SOURCE_DIR=/home/calin/Workplace/llvm
+# Aliases
+alias vi='vim'
+alias rm='rm -vi'
+alias grep='grep --color=auto'
+alias reload="source ~/.zshrc"
+alias netest="ping 8.8.8.8"
+alias weather="curl -4 http://wttr.in/Bucharest"
+alias python="/usr/bin/python2"
 
-export LLVM_CFLAGS="$(llvm-config --cxxflags) -fno-rtti"
-export LLVM_LDFLAGS="$(llvm-config --ldflags)"
+# Important files
+alias zshrc="vim ~/.zshrc"
+alias vimrc="vim ~/.vimrc"
+alias tmuxconf="vim ~/.tmux.conf"
+alias vimlast="vim -c \"normal '0\""
+alias syslog="vim /var/log/syslog"
 
-# Boost
-export BOOST_ROOT=/home/calin/Workplace/modular-boost/
+# Remove annoying messages
+unsetopt correctall
 
-# CMake
-export PATH="/home/calin/Workplace/cmake-3.1.3-install/bin:$PATH"
+# Qt5 for android exports
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk
+export ANDROID_HOME=/opt/android-sdk
+export ANDROID_SDK=/opt/android-sdk
+export ANDROID_NDK=/opt/android-ndk
+export ANDROID_NDK_TOOLCHAIN_ROOT=/opt/android-ndk/toolchains
+export Qt5_host=/usr
+export Qt5_android=/opt/android-qt5/5.6.0/armeabi-v7a
 
+export PATH="/opt/android-sdk/tools:$PATH"
+export PATH="/opt/android-qt5/5.6.0/armeabi-v7a/bin:$PATH"
 
-# alt-left and alt-right for switching words in terminal
-bindkey -e
-bindkey '^[[1;9C' forward-word
-bindkey '^[[1;9D' backward-word
+# Csound for Android
+export SDK=$ANDROID_SDK
+export NDK=$ANDROID_NDK
+export ANDROID_NDK_ROOT=$NDK
+export CSOUND_HOME=/home/calin/workspace/Csound6.06
+export NDK_MODULE_PATH=${CSOUND_HOME}/android/pluginlibs
+export PATH="${PATH}:$NDK_MODULE_PATH"
+export NDKABI=19
+export NDKVER=$NDK/toolchains/arm-linux-androideabi-4.9
+export NDKP=$NDKVER/prebuilt/linux-x86_64/bin/arm-linux-androideabi-
+export PATH="$NDKVER/prebuilt/linux-x86_64/bin:$PATH"
+export NDKF="--sysroot $NDK/platforms/android-$NDKABI/arch-arm"
+export NDKARCH="-march=armv7-a -mfloat-abi=softfp -Wl,--fix-cortex-a8"
 
-# ZSH Settings
-CASE_SENSITIVE="true"
-
-ZSH=$HOME/.oh-my-zsh
-plugins=(git common-aliases debian mercurial fasd zsh-syntax-highlighting)
-source $ZSH/oh-my-zsh.sh
-
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-[[ -s ~/.rvm/scripts/rvm ]] && . ~/.rvm/scripts/rvm

@@ -32,7 +32,7 @@ call vundle#begin()
 
 Plugin 'calincru/peaksea.vim'
 Plugin 'altercation/vim-colors-solarized'
-Plugin 'calincru/qml.vim'
+Plugin 'peterhoeg/vim-qml'
 Plugin 'ack.vim'
 Plugin 'YankRing.vim'
 Plugin 'octol/vim-cpp-enhanced-highlight'
@@ -49,6 +49,7 @@ Plugin 'cmake'
 Plugin 'neovimhaskell/haskell-vim'
 Plugin 'derekwyatt/vim-scala'
 Plugin 'Valloric/YouCompleteMe'
+Plugin 'rdnetto/YCM-Generator'
 
 call vundle#end()
 
@@ -208,7 +209,7 @@ set tabstop=4
 
 " Linebreak on 110 characters
 set lbr
-set tw=110
+set tw=80
 
 set ai "Auto indent
 set si "Smart indent
@@ -377,9 +378,6 @@ map <leader>s? z=
 " Remove the Windows ^M - when the encodings gets messed up
 noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
-" Go to definition
-nnoremap <leader>pg :YcmCompleter GoTo<CR>
-
 " Quickly open a buffer for scribble
 map <leader>q :e ~/buffer<cr>
 
@@ -398,6 +396,9 @@ map <leader>pp :setlocal paste!<cr>
 """"""""""""""""""""""""""""""
 " => Python
 """"""""""""""""""""""""""""""
+au BufRead,BufNewFile *.py set filetype=python
+au FileType python setlocal tw=79 ts=4 sw=4 colorcolumn=80
+
 let python_highlight_all = 1
 au FileType python syn keyword pythonDecorator True None False self
 
@@ -672,6 +673,12 @@ let g:airline_theme="bubblegum"
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => YouCompleteMe
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Go to definition/include
+map <C-]> :YcmCompleter GoTo<CR>
+
+" Get type
+map <C-T> :YcmCompleter GetType<CR>
+
 let g:ycm_error_symbol = '>>'
 let g:ycm_warning_symbol = '>'
 let g:ycm_complete_in_strings = 0

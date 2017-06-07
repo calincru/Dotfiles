@@ -1,11 +1,17 @@
 # Path to your oh-my-zsh installation.
 export ZSH=/home/calin/.oh-my-zsh
 
+# This is needed in order for tmux to work.
+export TERM=xterm-256color
+
+# Set up dir colors.
+eval `dircolors ~/.dir_colors_light`
+
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="clean"
+ZSH_THEME="clean-light"
 
 # Uncomment the following line to use case-sensitive completion.
 CASE_SENSITIVE="true"
@@ -30,7 +36,7 @@ DISABLE_AUTO_TITLE="true"
 # ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
+COMPLETION_WAITING_DOTS="true"
 
 # Uncomment the following line if you want to disable marking untracked files
 # under VCS as dirty. This makes repository status check for large repositories
@@ -50,7 +56,7 @@ DISABLE_AUTO_TITLE="true"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git zsh-syntax-highlighting fasd archlinux cabal gitfast
-         common-aliases
+         common-aliases zsh-autosuggestions git extract
         )
 
 # User configuration
@@ -68,7 +74,7 @@ source $ZSH/oh-my-zsh.sh
 EDITOR=vim
 
 # Preferred browser
-BROWSER=firefox
+BROWSER=google-chrome-stable
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -102,8 +108,8 @@ alias rm='rm -vi'
 alias grep='grep --color=auto'
 alias reload="source ~/.zshrc"
 alias netest="ping 8.8.8.8"
-alias weather="curl -4 http://wttr.in/Bucharest"
-alias python="/usr/bin/python2"
+alias weather="curl -4 http://wttr.in/"
+alias se='extract'
 
 # Important files
 alias zshrc="vim ~/.zshrc"
@@ -120,6 +126,7 @@ export JAVA_HOME=/usr/lib/jvm/java-8-openjdk
 export ANDROID_HOME=/opt/android-sdk
 export ANDROID_SDK=/opt/android-sdk
 export ANDROID_NDK=/opt/android-ndk
+export ANDROID_NDK_HOME=$ANDROID_NDK
 export ANDROID_NDK_TOOLCHAIN_ROOT=/opt/android-ndk/toolchains
 export Qt5_host=/usr
 export Qt5_android=/opt/android-qt5/5.6.0/armeabi-v7a
@@ -141,3 +148,9 @@ export PATH="$NDKVER/prebuilt/linux-x86_64/bin:$PATH"
 export NDKF="--sysroot $NDK/platforms/android-$NDKABI/arch-arm"
 export NDKARCH="-march=armv7-a -mfloat-abi=softfp -Wl,--fix-cortex-a8"
 
+# Scala
+export PATH="/usr/lib/jvm/java-8-openjdk:$PATH"
+
+# No need for XON/XOFF
+stty -ixon
+stty stop undef

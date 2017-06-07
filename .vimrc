@@ -1,28 +1,3 @@
-" Sections:
-"    -> Load plugins using Vundle
-"    -> General
-"    -> VIM user interface
-"    -> Colors and Fonts
-"    -> Files and backups
-"    -> Text, tab and indent related
-"    -> Visual mode related
-"    -> Moving around, tabs and buffers
-"    -> Status line
-"    -> Editing mappings
-"    -> vimgrep searching and cope displaying
-"    -> Spell checking
-"    -> Misc
-"    -> Filetype settings
-"    -> GUI related
-"    -> Fast editing
-"    -> Persistent undo
-"    -> Helper functions
-"    -> Plugins config
-"    -> Ctags settings
-"
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-
 " Initializations for Vundle
 set nocompatible
 filetype off
@@ -30,26 +5,26 @@ filetype off
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
-Plugin 'calincru/peaksea.vim'
-Plugin 'altercation/vim-colors-solarized'
 Plugin 'peterhoeg/vim-qml'
 Plugin 'ack.vim'
 Plugin 'YankRing.vim'
-Plugin 'octol/vim-cpp-enhanced-highlight'
 Plugin 'amix/open_file_under_cursor.vim'
 Plugin 'majutsushi/tagbar'
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
 Plugin 'tpope/vim-commentary'
 Plugin 'tpope/vim-markdown'
 Plugin 'tpope/vim-repeat'
-Plugin 'endel/vim-github-colorscheme'
 Plugin 'vim-indent-object'
 Plugin 'cmake'
 Plugin 'neovimhaskell/haskell-vim'
 Plugin 'derekwyatt/vim-scala'
 Plugin 'Valloric/YouCompleteMe'
-Plugin 'rdnetto/YCM-Generator'
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'octol/vim-cpp-enhanced-highlight'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
+Plugin 'derekwyatt/vim-fswitch'
+Plugin 'calincru/flex-bison-syntax'
+Plugin 'llvm', {'pinned' : 1}
 
 call vundle#end()
 
@@ -58,7 +33,7 @@ call vundle#end()
 " => General
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Sets how many lines of history VIM has to remember
-set history=700
+set history=9999
 
 " Enable filetype plugins
 filetype plugin on
@@ -73,14 +48,14 @@ let mapleader = ","
 let g:mapleader = ","
 
 " Fast saving
-nmap <leader>w :w!<cr>
+nnoremap <leader>w :w!<cr>
 
 " Clear whitespaces
-nmap <leader>s :%s/\s\+$//g<cr>
+nnoremap <leader>s :%s/\s\+$//g<cr>
 
 " :W sudo saves the file
 " (useful for handling the permission-denied error)
-command W w !sudo tee % > /dev/null
+command! W w !sudo tee % > /dev/null
 
 " Adds a red line on the 80th column
 set colorcolumn=80
@@ -88,6 +63,56 @@ set colorcolumn=80
 " Mouse settings
 set mouse=a
 
+" a new horizontal split is placed below, not above
+set splitbelow
+" a new vertical split is placed to the right, not left
+set splitright
+
+" make sure exactly these options are set
+set shortmess=filmnrxI
+
+" Quick replay 'q' macro and avoid Ex-mode.
+noremap Q <nop>
+
+" Disable select mode.
+nnoremap gh <nop>
+
+" Don't cancel visual select when shifting.
+vnoremap < <gv
+vnoremap > >gv
+
+" Sometimes the color column is annoying.
+command! ToggleColorColumn
+            \ if &colorcolumn == "" |
+            \   if exists('b:__old_colorcolumn') |
+            \       let &colorcolumn=b:__old_colorcolumn |
+            \   else |
+            \       let &colorcolumn=81 |
+            \   endif |
+            \ else |
+            \   let b:__old_colorcolumn=&colorcolumn |
+            \   let &colorcolumn="" |
+            \ endif
+nnoremap <silent> <f3> :ToggleColorColumn<cr>
+
+" Make typing commands easier. Easy-motion should be enough for navigation, but
+" we still keep the functionality of the semicolon.
+noremap ; :
+noremap : ;
+
+" Command history made easy.
+noremap q; q:
+
+" Map Alt + n to access nth tab
+noremap <A-1> 1gt
+noremap <A-2> 2gt
+noremap <A-3> 3gt
+noremap <A-4> 4gt
+noremap <A-5> 5gt
+noremap <A-6> 6gt
+noremap <A-7> 7gt
+noremap <A-8> 8gt
+noremap <A-9> 9gt
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
@@ -98,19 +123,20 @@ set so=7
 " Turn on the WiLd menu
 set wildmenu
 
-" Ignore compiled files
+" Ignore these files when autocompleting.
+set wildignore=*.obj,*.o,*~,*.pyc
+set wildignore+=__pycache__
+set wildignore+=*.so,*.a,*.dll
+set wildignore+=*.out,*.exe,*.com
+set wildignore+=*DS_Store*
+set wildignore+=.git/*,.hg/*,.svn/*
 set wildignore=*.o,*~,*.pyc
-if has("win16") || has("win32")
-    set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
-else
-    set wildignore+=.git\*,.hg\*,.svn\*
-endif
 
 " Always show current position
 set ruler
 
 " Height of the command bar
-set cmdheight=2
+set cmdheight=1
 
 " A buffer becomes hidden when it is abandoned
 set hid
@@ -149,10 +175,10 @@ set novisualbell
 set t_vb=
 set tm=500
 
-" Add a bit extra margin to the left
-set foldcolumn=1
+" show line number
+set rnu
 
-" It is already shown by one of the plugins
+" it is already shown by one of the plugins
 set noshowmode
 
 " Show trailing whitespaces as well as tabs
@@ -162,8 +188,10 @@ set list listchars=tab:»\ ,trail:·,extends:»,precedes:«
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Colors and Fonts
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Enable syntax highlighting
-syntax enable
+" turn on syntax highlighting, keeping current settings
+if !exists("g:syntax_on")
+    syntax enable
+endif
 
 " Set extra options when running in GUI mode
 if has("gui_running")
@@ -176,7 +204,11 @@ endif
 set t_Co=256
 
 " Set colorscheme
-colorscheme peaksea
+colorscheme solarized
+set background=light
+
+" Avoid ugly display of tabs and trailing whitespaces.
+" highlight! SpecialKey ctermbg=NONE guibg=NONE
 
 " Set utf8 as standard encoding and en_US as the standard language
 set encoding=utf8
@@ -188,7 +220,7 @@ set ffs=unix,dos,mac
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Files, backups and undo
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Turn backup off, since most stuff is in SVN, git et.c anyway...
+" Turn backup off, since most stuff is in SVN, git etc. anyway...
 set nobackup
 set nowb
 set noswapfile
@@ -204,10 +236,10 @@ set expandtab
 set smarttab
 
 " 1 tab == 4 spaces
-set shiftwidth=4
-set tabstop=4
+set shiftwidth=2
+set tabstop=2
 
-" Linebreak on 110 characters
+" Linebreak on 80 characters
 set lbr
 set tw=80
 
@@ -228,51 +260,51 @@ vnoremap <silent> * :call VisualSelection('f', '')<CR>
 vnoremap <silent> # :call VisualSelection('b', '')<CR>
 
 " Clang format
-map <C-I> :pyf /home/calin/scripts/clang-format.py<cr>
+noremap <C-I> :pyf /home/calin/scripts/clang-format.py<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Moving around, tabs, windows and buffers
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Treat long lines as break lines (useful when moving around in them)
-map j gj
-map k gk
+noremap j gj
+noremap k gk
 
 " Map <Space> to / (search) and Ctrl-<Space> to ? (backwards search)
-map <space> /
-map <c-space> ?
+noremap <space> /
+noremap <c-space> ?
 
 " Disable highlight when <leader><cr> is pressed
-map <silent> <leader><cr> :noh<cr>
+noremap <silent> <leader><cr> :noh<cr>
 
 " Smart way to move between windows
-map <C-j> <C-W>j
-map <C-k> <C-W>k
-map <C-h> <C-W>h
-map <C-l> <C-W>l
+noremap <C-j> <C-W>j
+noremap <C-k> <C-W>k
+noremap <C-h> <C-W>h
+noremap <C-l> <C-W>l
 
 " Close the current buffer
-map <leader>bd :Bclose<cr>
+noremap <leader>bd :Bclose<cr>
 
 " Close all the buffers
-map <leader>ba :1,1000 bd!<cr>
+noremap <leader>ba :1,1000 bd!<cr>
 
 " Useful mappings for managing tabs
-map <leader>tn :tabnew<cr>
-map <leader>to :tabonly<cr>
-map <leader>tc :tabclose<cr>
-map <leader>tm :tabmove
-map <leader>t<leader> :tabnext
+noremap <leader>tn :tabnew<cr>
+noremap <leader>to :tabonly<cr>
+noremap <leader>tc :tabclose<cr>
+noremap <leader>tm :tabmove
+noremap <leader>t<leader> :tabnext
 
 " Opens a new tab with the current buffer's path
 " Super useful when editing files in the same directory
-map <leader>te :tabedit <c-r>=expand("%:p:h")<cr><cr>
+noremap <leader>te :tabedit <c-r>=expand("%:p:h")<cr><cr>
 
 " Switch CWD to the directory of the open buffer
-map <leader>cd :cd %:p:h<cr>:pwd<cr>
+noremap <leader>cd :cd %:p:h<cr>:pwd<cr>
 
 " Specify the behavior when switching between buffers
 try
-  set switchbuf=useopen,usetab,newtab
+  set switchbuf=useopen,usetab
   set stal=2
 catch
 endtry
@@ -284,7 +316,6 @@ autocmd BufReadPost *
      \ endif
 " Remember info about open buffers on close
 set viminfo^=%
-
 
 """"""""""""""""""""""""""""""
 " => Status line
@@ -303,8 +334,8 @@ set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ 
 " map 0 ^
 
 " Move a line of text using ALT+[jk] or Comamnd+[jk] on mac
-nmap <M-j> mz:m+<cr>`z
-nmap <M-k> mz:m-2<cr>`z
+nnoremap <M-j> mz:m+<cr>`z
+nnoremap <M-k> mz:m-2<cr>`z
 vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
 vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
@@ -334,7 +365,7 @@ autocmd BufWrite *.h :call DeleteTrailingWS()
 vnoremap <silent> gv :call VisualSelection('gv', '')<CR>
 
 " Open Ack and put the cursor in the right position
-map <leader>g :Ack
+noremap <leader>g :Ack
 
 " When you press <leader>r you can saarch and replace the selected text
 vnoremap <silent> <leader>r :call VisualSelection('replace', '')<CR>
@@ -350,26 +381,23 @@ vnoremap <silent> <leader>r :call VisualSelection('replace', '')<CR>
 " To go to the previous search results do:
 "   <leader>p
 "
-map <leader>cc :botright cope<cr>
-map <leader>co ggVGy:tabnew<cr>:set syntax=qf<cr>pgg
-map <leader>n :cn<cr>
-map <leader>p :cp<cr>
-
-imap jk <Esc>
-imap kj <Esc>
+noremap <leader>cc :botright cope<cr>
+noremap <leader>co ggVGy:tabnew<cr>:set syntax=qf<cr>pgg
+noremap <leader>n :cn<cr>
+noremap <leader>p :cp<cr>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Spell checking
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Pressing ,ss will toggle and untoggle spell checking
-map <leader>ss :setlocal spell!<cr>
+noremap <leader>ss :setlocal spell!<cr>
 
 " Shortcuts using <leader>
-map <leader>sn ]s
-map <leader>sp [s
-map <leader>sa zg
-map <leader>s? z=
+noremap <leader>sn ]s
+noremap <leader>sp [s
+noremap <leader>sa zg
+noremap <leader>s? z=
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -379,25 +407,36 @@ map <leader>s? z=
 noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
 " Quickly open a buffer for scribble
-map <leader>q :e ~/buffer<cr>
+noremap <leader>q :e ~/buffer<cr>
 
 " Quickly open a markdown buffer for scribble
-map <leader>x :e ~/buffer.md<cr>
+noremap <leader>x :e ~/buffer.md<cr>
 
 " Toggle paste mode on and off
-map <leader>pp :setlocal paste!<cr>
+noremap <leader>pp :setlocal paste!<cr>
 
+" Easy copy/paste
+set clipboard=unnamed
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Filetypes settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""
+" => Scala
+""""""""""""""""""""""""""""""
+au BufRead,BufNewFile *.scala set filetype=scala
+au FileType scala setlocal tw=80 ts=2 sw=2 colorcolumn=+1
+
+" => Java
+au BufRead,BufNewFile *.java,*.jws set filetype=java
+au FileType java setlocal tw=81 ts=2 sw=2 colorcolumn=+1
 
 """"""""""""""""""""""""""""""
 " => Python
 """"""""""""""""""""""""""""""
 au BufRead,BufNewFile *.py set filetype=python
-au FileType python setlocal tw=79 ts=4 sw=4 colorcolumn=80
+au FileType python setlocal tw=79 ts=4 sw=4 colorcolumn=+1
 
 let python_highlight_all = 1
 au FileType python syn keyword pythonDecorator True None False self
@@ -477,7 +516,6 @@ set guioptions-=r
 set guioptions-=R
 set guioptions-=l
 set guioptions-=L
-
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -604,19 +642,26 @@ function! <SID>BufcloseCloseIt()
    endif
 endfunction
 
+" Work-around to copy selected text to system clipboard and prevent it from
+" clearing clipboard when using C-z.
+autocmd VimLeave * call system("xsel -i", getreg('*'))
+
+" Easy copy/paste using termbin.com
+command! -range=% Tbcopy <line1>,<line2>w !netcat termbin.com 9999
+command! -nargs=1 -range Tbpaste <line1>,<line2>!curl --silent termbin.com/<f-args>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Plugins config
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""
-" => bufExplorer plugin
+" => bufExplorer
 """"""""""""""""""""""""""""""
 let g:bufExplorerDefaultHelp=0
 let g:bufExplorerShowRelativePath=1
 let g:bufExplorerFindActive=1
 let g:bufExplorerSortBy='name'
-map <leader>o :BufExplorer<cr>
+noremap <leader>o :BufExplorer<cr>
 
 
 """"""""""""""""""""""""""""""
@@ -636,8 +681,8 @@ endif
 let g:ctrlp_working_path_mode = 0
 
 let g:ctrlp_map = '<c-f>'
-map <leader>j :CtrlP<cr>
-map <c-b> :CtrlPBuffer<cr>
+noremap <leader>j :CtrlP<cr>
+noremap <c-b> :CtrlPBuffer<cr>
 
 let g:ctrlp_max_height = 20
 let g:ctrlp_custom_ignore = 'node_modules\|^\.DS_Store\|^\.git\|^\.coffee'
@@ -653,31 +698,33 @@ set grepprg=/bin/grep\ -nH
 """""""""""""""""""""""""""""
 " => Tagbar
 """"""""""""""""""""""""""""
-nmap <F8> :TagbarToggle<CR>
+nnoremap <F8> :TagbarToggle<CR>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Nerd Tree
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-map <leader>nn :NERDTreeToggle<cr>
-map <leader>nb :NERDTreeFromBookmark
-map <leader>nf :NERDTreeFind<cr>
+noremap <leader>nn :NERDTreeToggle<cr>
+noremap <leader>nb :NERDTreeFromBookmark
+noremap <leader>nf :NERDTreeFind<cr>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => vim-airline config (force color)
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:airline_theme="bubblegum"
+let g:airline_theme="solarized"
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => YouCompleteMe
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Go to definition/include
-map <C-]> :YcmCompleter GoTo<CR>
+noremap <C-]> :YcmCompleter GoTo<CR>
 
 " Get type
-map <C-T> :YcmCompleter GetType<CR>
+noremap <C-T> :YcmCompleter GetType<CR>
 
 let g:ycm_error_symbol = '>>'
 let g:ycm_warning_symbol = '>'
@@ -686,6 +733,7 @@ let g:ycm_global_ycm_extra_conf = '/home/calin/scripts/.ycm_extra_conf.py'
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_extra_conf_globlist = ['~/scripts/*','!~/*']
 let g:ycm_autoclose_preview_window_after_insertion = 1
+let g:ycm_server_keep_logfiles = 1
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -704,3 +752,43 @@ let g:haskell_indent_let = 4
 let g:haskell_indent_where = 6
 let g:haskell_indent_do = 3
 let g:haskell_indent_in = 1
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => FSwitch
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+noremap <C-s> :FSSplitBelow<cr>
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Cscope
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if has("cscope")
+  " Look for a 'cscope.out' file starting from the current directory,
+  " going up to the root directory.
+  let s:dirs = split(getcwd(), "/")
+  while s:dirs != []
+    let s:path = "/" . join(s:dirs, "/")
+    if (filereadable(s:path . "/cscope.out"))
+      execute "cs add " . s:path . "/cscope.out " . s:path . " -v"
+      break
+    endif
+    let s:dirs = s:dirs[:-2]
+  endwhile
+
+  set csto=0 " Use cscope first, then ctags
+  set cst    " Only search cscope
+  set csverb " Make cs verbose
+
+  noremap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+  noremap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+  noremap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+  noremap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+  noremap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+  noremap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+  noremap <C-\>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+  noremap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+
+  " Open a quickfix window for the following queries.
+  set cscopequickfix=s-,c-,d-,i-,t-,e-,g-
+endif

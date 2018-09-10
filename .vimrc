@@ -5,25 +5,22 @@ filetype off
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
-Plugin 'peterhoeg/vim-qml'
 Plugin 'ack.vim'
 Plugin 'YankRing.vim'
-Plugin 'amix/open_file_under_cursor.vim'
 Plugin 'majutsushi/tagbar'
 Plugin 'tpope/vim-commentary'
 Plugin 'tpope/vim-markdown'
 Plugin 'tpope/vim-repeat'
 Plugin 'vim-indent-object'
-Plugin 'cmake'
 Plugin 'neovimhaskell/haskell-vim'
-Plugin 'derekwyatt/vim-scala'
-Plugin 'Valloric/YouCompleteMe'
 Plugin 'altercation/vim-colors-solarized'
-Plugin 'octol/vim-cpp-enhanced-highlight'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
+Plugin 'octol/vim-cpp-enhanced-highlight'
 Plugin 'derekwyatt/vim-fswitch'
-Plugin 'calincru/flex-bison-syntax'
+Plugin 'google/yapf'
+Plugin 'scrooloose/nerdtree'
+Plugin 'Valloric/YouCompleteMe'
 Plugin 'llvm', {'pinned' : 1}
 
 call vundle#end()
@@ -175,8 +172,10 @@ set novisualbell
 set t_vb=
 set tm=500
 
-" show line number
-set rnu
+" show relative line number
+" set relativenumber
+" show the actual line number as well
+set number
 
 " it is already shown by one of the plugins
 set noshowmode
@@ -205,7 +204,7 @@ set t_Co=256
 
 " Set colorscheme
 colorscheme solarized
-set background=light
+set background=dark
 
 " Avoid ugly display of tabs and trailing whitespaces.
 " highlight! SpecialKey ctermbg=NONE guibg=NONE
@@ -235,7 +234,7 @@ set expandtab
 " Be smart when using tabs ;)
 set smarttab
 
-" 1 tab == 4 spaces
+" 1 tab == 2 spaces
 set shiftwidth=2
 set tabstop=2
 
@@ -261,6 +260,8 @@ vnoremap <silent> # :call VisualSelection('b', '')<CR>
 
 " Clang format
 noremap <C-I> :pyf /home/calin/scripts/clang-format.py<cr>
+" yapf by Google
+noremap <C-Y> :YAPF<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Moving around, tabs, windows and buffers
@@ -404,10 +405,10 @@ noremap <leader>s? z=
 " => Misc
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Remove the Windows ^M - when the encodings gets messed up
-noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
+" noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
 " Quickly open a buffer for scribble
-noremap <leader>q :e ~/buffer<cr>
+" noremap <leader>q :e ~/buffer<cr>
 
 " Quickly open a markdown buffer for scribble
 noremap <leader>x :e ~/buffer.md<cr>
@@ -488,7 +489,7 @@ au FileType haskell setlocal textwidth=79 tabstop=2 shiftwidth=2 colorcolumn=80
 " => LaTeX
 """"""""""""""""""""""""""""""
 au BufRead,BufNewFile *.tex set filetype=tex
-au FileType tex setlocal textwidth=79 tabstop=2 shiftwidth=2 colorcolumn=80 spell expandtab
+au FileType tex setlocal textwidth=150 tabstop=2 shiftwidth=2 colorcolumn=+1 spell expandtab nocursorline
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -688,12 +689,6 @@ let g:ctrlp_max_height = 20
 let g:ctrlp_custom_ignore = 'node_modules\|^\.DS_Store\|^\.git\|^\.coffee'
 
 
-""""""""""""""""""""""""""""""
-" => Vim grep
-""""""""""""""""""""""""""""""
-let Grep_Skip_Dirs = 'RCS CVS SCCS .svn generated'
-set grepprg=/bin/grep\ -nH
-
 
 """""""""""""""""""""""""""""
 " => Tagbar
@@ -758,37 +753,3 @@ let g:haskell_indent_in = 1
 " => FSwitch
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 noremap <C-s> :FSSplitBelow<cr>
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Cscope
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-if has("cscope")
-  " Look for a 'cscope.out' file starting from the current directory,
-  " going up to the root directory.
-  let s:dirs = split(getcwd(), "/")
-  while s:dirs != []
-    let s:path = "/" . join(s:dirs, "/")
-    if (filereadable(s:path . "/cscope.out"))
-      execute "cs add " . s:path . "/cscope.out " . s:path . " -v"
-      break
-    endif
-    let s:dirs = s:dirs[:-2]
-  endwhile
-
-  set csto=0 " Use cscope first, then ctags
-  set cst    " Only search cscope
-  set csverb " Make cs verbose
-
-  noremap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>
-  noremap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
-  noremap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>
-  noremap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>
-  noremap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>
-  noremap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
-  noremap <C-\>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
-  noremap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>
-
-  " Open a quickfix window for the following queries.
-  set cscopequickfix=s-,c-,d-,i-,t-,e-,g-
-endif

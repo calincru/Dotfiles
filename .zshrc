@@ -5,35 +5,19 @@ export ZSH=/home/calin/.oh-my-zsh
 export TERM=xterm-256color
 
 # Set up dir colors.
-eval `dircolors ~/.dir_colors_light`
+eval `dircolors ~/.dir_colors_dark`
 
 # Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
-# Optionally, if you set this to "random", it'll load a random theme each
-# time that oh-my-zsh is loaded.
-ZSH_THEME="clean-light"
+ZSH_THEME="clean"
 
 # Uncomment the following line to use case-sensitive completion.
 CASE_SENSITIVE="true"
 
-# Uncomment the following line to use hyphen-insensitive completion. Case
-# sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
 # Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
+export UPDATE_ZSH_DAYS=10
 
 # Uncomment the following line to disable auto-setting terminal title.
 DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
 COMPLETION_WAITING_DOTS="true"
@@ -56,59 +40,31 @@ COMPLETION_WAITING_DOTS="true"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git zsh-syntax-highlighting fasd archlinux cabal gitfast
-         common-aliases zsh-autosuggestions git extract
+         common-aliases zsh-autosuggestions extract tmux zsh_reload
         )
-
-# User configuration
-
-export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl"
-export PATH="/home/calin/scripts:$PATH" # Add scripts dir to path
-# export MANPATH="/usr/local/man:$MANPATH"
-
-source $ZSH/oh-my-zsh.sh
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
 EDITOR=vim
 
 # Preferred browser
-BROWSER=google-chrome-stable
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# ssh
-# export SSH_KEY_PATH="~/.ssh/dsa_id"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
+BROWSER=firefox
 
 # Tmux
 ZSH_TMUX_AUTOSTART=true
-ZSH_TMUX_AUTOQUIT=true
+ZSH_TMUX_FIXTERM=true
+ZSH_TMUX_AUTOCONNECT=false
+ZSH_TMUX_AUTOQUIT=false
 alias tmux='tmux -2'
 
 # FASD for faster switching between directories
 eval "$(fasd --init auto)"
 
-# Local Variables
-SCRIPTS_DIR="/home/calin/scripts"
-
 # Aliases
 alias vi='vim'
 alias rm='rm -vi'
 alias grep='grep --color=auto'
-alias reload="source ~/.zshrc"
 alias netest="ping 8.8.8.8"
-alias weather="curl -4 http://wttr.in/"
+alias weather="curl -4 http://wttr.in/Zurich"
 alias se='extract'
 
 # Important files
@@ -121,36 +77,38 @@ alias syslog="vim /var/log/syslog"
 # Remove annoying messages
 unsetopt correctall
 
-# Qt5 for android exports
-export JAVA_HOME=/usr/lib/jvm/java-8-openjdk
-export ANDROID_HOME=/opt/android-sdk
-export ANDROID_SDK=/opt/android-sdk
-export ANDROID_NDK=/opt/android-ndk
-export ANDROID_NDK_HOME=$ANDROID_NDK
-export ANDROID_NDK_TOOLCHAIN_ROOT=/opt/android-ndk/toolchains
-export Qt5_host=/usr
-export Qt5_android=/opt/android-qt5/5.6.0/armeabi-v7a
-
-export PATH="/opt/android-sdk/tools:$PATH"
-export PATH="/opt/android-qt5/5.6.0/armeabi-v7a/bin:$PATH"
-
-# Csound for Android
-export SDK=$ANDROID_SDK
-export NDK=$ANDROID_NDK
-export ANDROID_NDK_ROOT=$NDK
-export CSOUND_HOME=/home/calin/workspace/Csound6.06
-export NDK_MODULE_PATH=${CSOUND_HOME}/android/pluginlibs
-export PATH="${PATH}:$NDK_MODULE_PATH"
-export NDKABI=19
-export NDKVER=$NDK/toolchains/arm-linux-androideabi-4.9
-export NDKP=$NDKVER/prebuilt/linux-x86_64/bin/arm-linux-androideabi-
-export PATH="$NDKVER/prebuilt/linux-x86_64/bin:$PATH"
-export NDKF="--sysroot $NDK/platforms/android-$NDKABI/arch-arm"
-export NDKARCH="-march=armv7-a -mfloat-abi=softfp -Wl,--fix-cortex-a8"
-
-# Scala
-export PATH="/usr/lib/jvm/java-8-openjdk:$PATH"
+# Personal additions to PATH to be seen by awesome
+export PATH="/home/calin/scripts:$PATH"
+export PATH="/home/calin/scripts/eth:$PATH"
 
 # No need for XON/XOFF
 stty -ixon
 stty stop undef
+
+# added by Miniconda3 4.3.21 installer
+export PATH="/home/calin/miniconda3/bin:$PATH"
+
+function view {
+  [ "$#" -eq 1 ]
+  if file "$1" | grep -q "PDF"; then
+    evince "$1"
+  elif file "$1" | grep "GIF"; then
+    gifview "$1"
+  elif file "$1" | grep "image"; then
+    xloadimage -quiet "$1"
+  elif file "$1" | grep "MP4"; then
+    vlc "$1"
+  fi
+}
+
+# MATLAB
+alias matlab='matlab -nodesktop'
+
+# Don't open less if less than a page.
+export LESS="-F -R -X $LESS"
+
+# Import pass configuration.
+source ~/.pass.zsh
+
+# NOTE: Keep this at the end.
+source $ZSH/oh-my-zsh.sh

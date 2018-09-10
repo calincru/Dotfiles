@@ -1,0 +1,24 @@
+#!/usr/bin/ash
+
+run_hook()
+{
+	# load dm-crypt
+	modprobe -a -q dm-crypt >/dev/null 2>&1
+
+	# swap
+	swap_dev="/dev/disk/by-uuid/b7823e80-419d-48a6-9d86-59553382a028"
+	swap_mapname="cryptswap"
+	swap_keyfile="/etc/initcpio/cryptswap.key"
+
+	echo -e '\n\n'
+	echo '*********************************************************************'
+	echo '************************** SWAP DECRYPTION **************************'
+	echo '*********************************************************************'
+
+	# open it and kill gpg agent afterwards
+	/usr/bin/gpg --homedir /etc/initcpio/gpg --quiet --decrypt "${swap_keyfile}" 0</dev/console | cryptsetup open "$swap_dev" "$swap_mapname"
+	/usr/bin/gpg-connect-agent --homedir /etc/initcpio/gpg killagent /bye >/dev/null 2>&1
+
+	echo '*********************************************************************'
+	echo -e '\n\n'
+}
